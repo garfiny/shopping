@@ -3,6 +3,7 @@ package io.shuo.zhao.dius.shopping;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Checkout {
 
@@ -21,6 +22,7 @@ public class Checkout {
     }
 
     public BigDecimal total() {
-        return BigDecimal.ZERO;
+        return pricingRules.stream().map(rule -> rule.apply(this.items))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }
