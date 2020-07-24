@@ -106,9 +106,9 @@ class CheckoutTest extends Specification {
 
         where:
         items                          | total
-        [IPAD, IPAD, IPAD]             | BigDecimal.valueOf(IPAD.unitPrice).multiply(3)
-        [IPAD, IPAD, IPAD, IPAD]       | BigDecimal.valueOf(499.99).multiply(4)
-        [IPAD, IPAD, IPAD, IPAD, IPAD] | BigDecimal.valueOf(499.99).multiply(5)
+        [IPD, IPD, IPD]             | BigDecimal.valueOf(IPD.unitPrice).multiply(3)
+        [IPD, IPD, IPD, IPD]       | BigDecimal.valueOf(499.99).multiply(4)
+        [IPD, IPD, IPD, IPD, IPD] | BigDecimal.valueOf(499.99).multiply(5)
     }
 
     def "calculate total price - free adapter deal"() {
@@ -122,5 +122,60 @@ class CheckoutTest extends Specification {
         [MBP, VGA]           | BigDecimal.valueOf(MBP.unitPrice)
         [MBP, VGA, MBP, VGA] | BigDecimal.valueOf(MBP.unitPrice).multiply(2)
         [MBP, VGA, IPD]      | BigDecimal.valueOf(MBP.unitPrice).plus(IPD.unitPrice)
+    }
+
+    def "calculate total price - multple deals: 3 for 2 ATV and free vga"() {
+        when:
+        items.each { item -> checkout.scan(item) }
+
+        then:
+        def total = BigDecimal.valueOf(ATV.unitPrice)
+                              .multiply(2).plus(BigDecimal.valueOf(MBP.unitPrice))
+        checkout.total() == total
+
+        where:
+        items << [ATV, ATV, MBP, ATV, VGA]
+    }
+
+    def "calculate total price - multple deals: 3 for 2 ATV and bulk ipad"() {
+        given:
+        when:
+        items.each { item -> checkout.scan(item) }
+
+        then:
+        def total = BigDecimal.valueOf(ATV.unitPrice).multiply(2)
+                              .plus(BigDecimal.valueOf(499.99).multiply(4))
+        checkout.total() == total
+
+        where:
+        items << [ATV, ATV, ATV, IPD, IPD, IPD, IPD]
+    }
+
+    def "calculate total price - multple deals: bulk ipad and free vga"() {
+        given:
+        when:
+        items.each { item -> checkout.scan(item) }
+
+        then:
+        def total = BigDecimal.valueOf(MBP.unitPrice).plus(BigDecimal.valueOf(499.99).multiply(4))
+        checkout.total() == total
+
+        where:
+        items << [MBP, IPD, IPD, IPD, IPD, VGA]
+    }
+
+    def "calculate total price - all three deals"() {
+        given:
+        when:
+        items.each { item -> checkout.scan(item) }
+
+        then:
+        def total = BigDecimal.valueOf(ATV.unitPrice).multiply(2)
+                              .plus(BigDecimal.valueOf(499.99).multiply(4))
+                              .plus(MBP.unitPrice)
+        checkout.total() == total
+
+        where:
+        items << [MBP, IPD, IPD, IPD, IPD, VGA, ATV, ATV, ATV]
     }
 }

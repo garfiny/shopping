@@ -15,7 +15,9 @@ public class Checkout {
     }
 
     public void scan(Item item) {
-
+        if (item != null) {
+            items.add(item);
+        }
     }
 
     public BigDecimal total() {
