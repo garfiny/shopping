@@ -1,7 +1,9 @@
 package io.shuo.zhao.dius.shopping
 
+import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Subject
+import spock.lang.Unroll
 
 import static io.shuo.zhao.dius.shopping.Item.*
 
@@ -10,8 +12,11 @@ class CheckoutTest extends Specification {
     @Subject
     def checkout
 
+    @Shared
+    def appleTvPricingRule = new AppleTVPricingRule()
+
     def setup() {
-        checkout = new Checkout()
+        checkout = new Checkout([appleTvPricingRule])
     }
 
     def "Receive price rules when initiate checkout"() {
@@ -59,13 +64,14 @@ class CheckoutTest extends Specification {
         notThrown Exception
     }
 
+    @Unroll
     def "calculate total prices - basic scenario"() {
         expect:
         items.each { item -> checkout.scan(item) }
         checkout.total() == total
 
         where:
-        items                                    | total
+        items                | total
         [ATV]                | ATV.unitPrice
         [ATV, IPD]           | ATV.unitPrice.plus(IPD.unitPrice)
         [ATV, IPD, MBP]      | ATV.unitPrice.plus(IPD.unitPrice)

@@ -26,4 +26,15 @@ class AppleTVPricingRuleTest extends Specification {
         [ATV] * 6 |  ATV.unitPrice.multiply(4)
         [ATV] * 8 |  ATV.unitPrice.multiply(6)
     }
+
+    def "get eligible items for this rule"() {
+        expect:
+        rule.eligibleItems(inputItems) == eligibleItems
+
+        where:
+        inputItems           | eligibleItems
+        [ATV, ATV]           |  [ATV, ATV]
+        [ATV, MBP, VGA]      |  [ATV]
+        [ATV, MBP, VGA, ATV] |  [ATV, ATV]
+    }
 }

@@ -5,4 +5,6 @@ import java.util.List;
 
 public interface PricingRule {
     BigDecimal apply(List<Item> items);
+
+    List<Item> eligibleItems(List<Item> items);
 }
