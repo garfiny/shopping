@@ -8,11 +8,16 @@ import static io.shuo.zhao.dius.shopping.Item.ATV;
 
 public class AppleTVPricingRule implements PricingRule {
 
+    public static final int LEAST_CHARGING_NUM = 2;
+    public static final int FREE_TV_NUM = 1;
+
     @Override
     public BigDecimal apply(List<Item> items) {
         List<Item> appleTvItems = eligibleItems(items);
         int numOfTvs = appleTvItems.size();
-        int numOfTvsForCharging = (numOfTvs / 3) * 2 + (numOfTvs % 3);
+        int chargeGroupSize = LEAST_CHARGING_NUM + FREE_TV_NUM;
+        int numOfTvsForCharging =
+                (numOfTvs / chargeGroupSize) * LEAST_CHARGING_NUM + (numOfTvs % chargeGroupSize);
         return ATV.getUnitPrice().multiply(BigDecimal.valueOf(numOfTvsForCharging));
     }
 

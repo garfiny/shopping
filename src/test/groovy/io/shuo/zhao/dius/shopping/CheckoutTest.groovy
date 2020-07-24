@@ -14,9 +14,11 @@ class CheckoutTest extends Specification {
 
     @Shared
     def appleTvPricingRule = new AppleTVPricingRule()
+    @Shared
+    def ipadBulkBuyRule = new IPadBulkBuyPricingRule()
 
     def setup() {
-        checkout = new Checkout([appleTvPricingRule])
+        checkout = new Checkout([appleTvPricingRule, ipadBulkBuyRule])
     }
 
     def "Receive price rules when initiate checkout"() {
