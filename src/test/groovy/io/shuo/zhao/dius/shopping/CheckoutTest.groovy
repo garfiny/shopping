@@ -105,9 +105,9 @@ class CheckoutTest extends Specification {
 
         where:
         items                          | total
-        [ATV, ATV, ATV]                | BigDecimal.valueOf(ATV.unitPrice).multiply(2)
-        [ATV, ATV, ATV, IPD]           | BigDecimal.valueOf(ATV.unitPrice).multiply(2).plus(IPD.unitPrice)
-        [ATV, ATV, ATV, ATV, ATV, ATV] | BigDecimal.valueOf(ATV.unitPrice).multiply(4)
+        [ATV, ATV, ATV]                | ATV.unitPrice.multiply(2)
+        [ATV, ATV, ATV, IPD]           | ATV.unitPrice.multiply(2).add(IPD.unitPrice)
+        [ATV, ATV, ATV, ATV, ATV, ATV] | ATV.unitPrice.multiply(4)
     }
 
     @Unroll
@@ -157,8 +157,7 @@ class CheckoutTest extends Specification {
         items.each { item -> checkout.scan(item) }
 
         then:
-        def total = BigDecimal.valueOf(ATV.unitPrice).multiply(2)
-                              .plus(BigDecimal.valueOf(499.99).multiply(4))
+        def total = ATV.unitPrice.multiply(2).add(BigDecimal.valueOf(499.99).multiply(4))
         checkout.total().compareTo(total) == 0
     }
 
@@ -170,7 +169,7 @@ class CheckoutTest extends Specification {
         items.each { item -> checkout.scan(item) }
 
         then:
-        def total = BigDecimal.valueOf(MBP.unitPrice).plus(BigDecimal.valueOf(499.99).multiply(4))
+        def total = BigDecimal.valueOf(MBP.unitPrice).add(BigDecimal.valueOf(499.99).multiply(4))
         checkout.total().compareTo(total) == 0
     }
 
@@ -183,8 +182,8 @@ class CheckoutTest extends Specification {
 
         then:
         def total = BigDecimal.valueOf(ATV.unitPrice).multiply(2)
-                              .plus(BigDecimal.valueOf(499.99).multiply(4))
-                              .plus(MBP.unitPrice)
+                              .add(BigDecimal.valueOf(499.99).multiply(4))
+                              .add(MBP.unitPrice)
         checkout.total().compareTo(total) == 0
     }
 }
