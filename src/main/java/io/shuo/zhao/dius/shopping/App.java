@@ -3,12 +3,45 @@
  */
 package io.shuo.zhao.dius.shopping;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+
+import static io.shuo.zhao.dius.shopping.Item.*;
+
 public class App {
-    public String getGreeting() {
-        return "Hello world.";
+
+    private static final PricingRule[] PRICING_RULES = new PricingRule[] {
+            new AppleTVPricingRule(),
+            new FreeVGAAdapterPricingRule(),
+            new IPadBulkBuyPricingRule()
+    };
+
+    private static final Item[] ITEMS_EXAMPLE_1 = new Item[] {ATV, ATV, ATV, VGA};
+    private static final Item[] ITEMS_EXAMPLE_2 = new Item[] {ATV, IPD, IPD, ATV, IPD, IPD, IPD};
+    private static final Item[] ITEMS_EXAMPLE_3 = new Item[] {MBP, VGA, IPD};
+
+    private static BigDecimal checkout(Item[] items) {
+        Checkout co = new Checkout(Arrays.asList(PRICING_RULES));
+        Arrays.stream(items).forEach(co::scan);
+        return co.total();
+    }
+
+    private static String scannedItems(Item[] items) {
+        return Arrays.stream(items)
+                .map(Item::getDescription)
+                .reduce("", (str1, str2) -> str1 + ", " + str2);
+    }
+
+    private static void displayExample(String title, Item[] items) {
+        System.out.println(title);
+        System.out.println("Scanned Items: " + scannedItems(items));
+        System.out.println("Total Price: $" + checkout(items));
+        System.out.println();
     }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        displayExample("Checkout Example 1: ", ITEMS_EXAMPLE_1);
+        displayExample("Checkout Example 2: ", ITEMS_EXAMPLE_2);
+        displayExample("Checkout Example 3: ", ITEMS_EXAMPLE_3);
     }
 }

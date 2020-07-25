@@ -169,7 +169,7 @@ class CheckoutTest extends Specification {
         items.each { item -> checkout.scan(item) }
 
         then:
-        def total = BigDecimal.valueOf(MBP.unitPrice).add(BigDecimal.valueOf(499.99).multiply(4))
+        def total = MBP.unitPrice.add(BigDecimal.valueOf(499.99).multiply(4))
         checkout.total().compareTo(total) == 0
     }
 
@@ -181,9 +181,24 @@ class CheckoutTest extends Specification {
         items.each { item -> checkout.scan(item) }
 
         then:
-        def total = BigDecimal.valueOf(ATV.unitPrice).multiply(2)
-                              .add(BigDecimal.valueOf(499.99).multiply(4))
-                              .add(MBP.unitPrice)
+        def total = ATV.unitPrice.multiply(2)
+                       .add(BigDecimal.valueOf(499.99).multiply(4))
+                       .add(MBP.unitPrice)
+        checkout.total().compareTo(total) == 0
+    }
+
+    def "calculate total price with some items do not apply to any pricing rules"() {
+        given:
+        def checkout = new Checkout([appleTvPricingRule, freeVgaAdapterRule])
+        def items = [MBP, IPD, IPD, IPD, IPD, VGA, ATV, ATV, ATV]
+
+        when:
+        items.each { item -> checkout.scan(item) }
+
+        then:
+        def total = ATV.unitPrice.multiply(2)
+                       .add(IPD.unitPrice.multiply(4))
+                       .add(MBP.unitPrice)
         checkout.total().compareTo(total) == 0
     }
 }

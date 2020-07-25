@@ -37,5 +37,5 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClassName = 'shopping.App'
+    mainClassName = 'io.shuo.zhao.dius.shopping.App'
 }
