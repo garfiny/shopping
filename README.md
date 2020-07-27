@@ -21,9 +21,9 @@ you don't need to install it on your local machine to run it.
 ## Run example App
 
 The example application defined in App.java
-You can simple run:
+You can simplely run:
 ```shell script
-./gradlew test
+./gradlew run
 ```
 And it will show you the result like this: <br>
 Checkout Example 1:<br>
